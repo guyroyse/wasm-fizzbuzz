@@ -6,46 +6,33 @@
   (export "countDigits" (func $countDigits))
 
   (func $increment (param $n i32) (result i32)
-    get_local $n
-    i32.const 1
-    i32.add
+    (i32.add (get_local $n) (i32.const 1))
   )
 
   (func $decrement (param $n i32) (result i32)
-    get_local $n
-    i32.const 1
-    i32.sub
+    (i32.sub (get_local $n) (i32.const 1))
   )
 
-  (func $power (param $base i32) (param $exponent i32)
+  (func $power (param $base i32) (param $exponent i32) (result i32)
     (local $counter i32)
     (local $accum i32)
 
-    i32.const 1
-    set_local $counter
 
-    get_local $base
-    set_local $accum
+    (if (i32.eqz (get_local $exponent))
+      (then
+        (return (i32.const 1))
+      )
+    )
 
-    loop
+    (set_local $counter (i32.const 1))
+    (set_local $accum (get_local $base))
 
-      get_local $counter
-      get_local $exponent
-      i32.lt_u
-      if
-
-        get_local $base
-        get_local $accum
-        i32.mul
-        set_local $accum
-
-        get_local $counter
-        call $increment
-        set_local $counter
-        br 0
-
-      else
-        br 1 ;; we're done
+    block
+      loop
+        (br_if 1 (i32.ge_u (get_local $counter) (get_local $exponent)))
+        (set_local $accum (i32.mul (get_local $base) (get_local $accum)))
+        (set_local $counter (call $increment (get_local $counter)))
+        (br 0)
       end
     end
 
@@ -56,38 +43,25 @@
     (local $length i32)
     (local $divisor i32)
 
-    i32.const 0
-    set_local $length
+    (set_local $length (i32.const 0))
+    (set_local $divisor (i32.const 1))
 
-    i32.const 1
-    set_local $divisor
+    (if (i32.eqz (get_local $n))
+      (then
+        (return (i32.const 1))
+      )
+    )
 
-    loop
-      get_local $n
-      get_local $divisor
-      i32.div_u
+    (block
+      (loop
+        (br_if 1 (i32.eqz (i32.div_u (get_local $n) (get_local $divisor))))
+        (set_local $length (call $increment (get_local $length)))
+        (set_local $divisor (i32.mul (get_local $divisor) (i32.const 10)))
+        (br 0)
+      )
+    )
 
-      i32.eqz
-      if
-        br 1 ;; we're done
-      else
-        ;; add to length
-        get_local $length
-        call $increment
-        set_local $length
-
-        ;; mutliply divisor
-        get_local $divisor
-        i32.const 10
-        i32.mul
-        set_local $divisor
-
-        ;; loop again
-        br 0
-      end
-    end
-
-    get_local $length
+    (get_local $length)
   )
 
 )
