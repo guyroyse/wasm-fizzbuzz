@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ]))
     .then(modelAndView =>
       loadWasm('controller.wasm', {
-        fizzbuzzModel: modelAndView[0],
-        fizzbuzzView: modelAndView[1]
+        model: modelAndView[0],
+        view: modelAndView[1]
       }))
     .then(controller => {
       let fizzBuzzButton = document.getElementById('fizzbuzz')
