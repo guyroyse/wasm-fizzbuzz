@@ -19,10 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   })()
 
-  Promise.all([
-    loadWasm('model.wasm'),
-    loadWasm('view.wasm', { html: passiveView })
-  ]).then(modelAndView => {
+  loadWasm('math').then(math => {
+    return Promise.all([
+      loadWasm('model.wasm'),
+      loadWasm('view.wasm', { html: passiveView, math: math })
+    ])
+  }).then(modelAndView => {
     let [model, view] = modelAndView
     return loadWasm('controller.wasm', {
       fizzbuzzModel: model,

@@ -4,6 +4,10 @@
   (import "html" "setResult" (func $setHtmlResult (param i32)))
   (import "html" "memory" (memory 1))
 
+  (import "math" "power" (func $power (param i32) (param i32) (result i32)))
+  (import "math" "increment" (func $increment (param i32) (param i32)))
+  (import "math" "countDigits" (func $countDigits (param i32) (result i32)))
+
   (export "getInput" (func $getInput))
   (export "setResult" (func $setResult))
 
@@ -119,45 +123,6 @@
     end
   )
 
-  (func $countDigits (param $n i32) (result i32)
-    (local $length i32)
-    (local $divisor i32)
-
-    i32.const 0
-    set_local $length
-
-    i32.const 1
-    set_local $divisor
-
-    loop
-      get_local $n
-      get_local $divisor
-      i32.div_u
-
-      i32.eqz
-      if
-        br 1 ;; we're done
-      else
-        ;; add to length
-        get_local $length
-        i32.const 1
-        i32.add
-        set_local $length
-
-        ;; mutliply divisor
-        get_local $divisor
-        i32.const 10
-        i32.mul
-        set_local $divisor
-
-        ;; loop again
-        br 0
-      end
-    end
-
-    get_local $length
-  )
-
   (func $storeLength (param $length i32)
       i32.const 19
       get_local $length
@@ -178,47 +143,6 @@
   (func $digitToUtf8 (param $digit i32) (result i32)
     get_local $digit
     i32.const 48
-    i32.add
-  )
-
-  (func $power (param $base i32) (param $exponent i32)
-    (local $counter i32)
-    (local $accum i32)
-
-    i32.const 1
-    set_local $counter
-
-    get_local $base
-    set_local $accum
-
-    loop
-
-      get_local $counter
-      get_local $exponent
-      i32.lt_u
-      if
-
-        get_local $base
-        get_local $accum
-        i32.mul
-        set_local $accum
-
-        get_local $counter
-        call $increment
-        set_local $counter
-        br 0
-
-      else
-        br 1 ;; we're done
-      end
-    end
-
-    get_local $accum
-  )
-
-  (func $increment (param $n i32) (result i32)
-    get_local $n
-    i32.const 1
     i32.add
   )
 
