@@ -1,12 +1,11 @@
 (module
 
+  (import "strings" "itoa" (func $itoa (param i32) (param i32)))
+
   (import "html" "getInput" (func $getHtmlInput (result i32)))
   (import "html" "setResult" (func $setHtmlResult (param i32)))
-  (import "html" "memory" (memory 1))
 
-  (import "math" "power" (func $power (param i32) (param i32) (result i32)))
-  (import "math" "increment" (func $increment (param i32) (param i32)))
-  (import "math" "countDigits" (func $countDigits (param i32) (result i32)))
+  (import "js" "memory" (memory 1))
 
   (export "getInput" (func $getInput))
   (export "setResult" (func $setResult))
@@ -82,68 +81,10 @@
 
   (func $setToNumber (param $n i32)
     get_local $n
+    i32.const 19
     call $itoa
+
+    i32.const 19
     call $setHtmlResult
   )
-
-  (func $itoa (param $n i32) (result i32)
-    (local $length i32)
-    (local $divisor i32)
-    (local $currentDigit i32)
-    (local $currentDivisor i32)
-
-    get_local $n
-    i32.eqz
-    if ;; 0 is hard-coded
-      i32.const 1
-      call $storeLength
-
-      i32.const 0
-      i32.const 0
-      call $storeDigit
-    else
-
-      get_local $n
-      call $countDigits
-      set_local $length
-
-      ;; 1 = 1, 2 = 10, 3 = 100, etc.
-
-      i32.const 10
-      get_local $length
-      call $power
-      set_local $divisor
-
-      loop
-      end
-
-      get_local $length
-      call $storeLength
-
-    end
-  )
-
-  (func $storeLength (param $length i32)
-      i32.const 19
-      get_local $length
-      i32.store8
-  )
-
-  (func $storeDigit (param $digit i32) (param $digitPosition i32)
-      get_local $digit
-      call $digitToUtf8
-
-      i32.const 20
-      get_local $digitPosition
-      i32.add
-
-      i32.store8
-  )
-
-  (func $digitToUtf8 (param $digit i32) (result i32)
-    get_local $digit
-    i32.const 48
-    i32.add
-  )
-
 )
