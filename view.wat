@@ -40,43 +40,43 @@
     i32.const -1
     i32.eq
     if
-      call $fizz
+      call $setToFizz
     else
       get_local $result
       i32.const -2
       i32.eq
       if
-        call $buzz
+        call $setToBuzz
       else
         get_local $result
         i32.const -3
         i32.eq
         if
-          call $fizzbuzz
+          call $setToFizzBuzz
         else
           get_local $result
-          call $number
+          call $setToNumber
         end
       end
     end
   )
 
-  (func $fizz
+  (func $setToFizz
     i32.const 0
     call $setHtmlResult
   )
 
-  (func $buzz
+  (func $setToBuzz
     i32.const 5
     call $setHtmlResult
   )
 
-  (func $fizzbuzz
+  (func $setToFizzBuzz
     i32.const 10
     call $setHtmlResult
   )
 
-  (func $number (param $n i32)
+  (func $setToNumber (param $n i32)
     get_local $n
     call $itoa
     call $setHtmlResult
@@ -85,96 +85,141 @@
   (func $itoa (param $n i32) (result i32)
     (local $length i32)
     (local $divisor i32)
+    (local $currentDigit i32)
+    (local $currentDivisor i32)
 
     get_local $n
     i32.eqz
-    if ;; 0 is a special case
+    if ;; 0 is hard-coded
       i32.const 1
-      set_local $length
+      call $storeLength
 
       i32.const 0
       i32.const 0
       call $storeDigit
     else
 
-      i32.const 1
-      set_local $divisor
-
-      i32.const 0
+      get_local $n
+      call $countDigits
       set_local $length
 
+      ;; 1 = 1, 2 = 10, 3 = 100, etc.
+
+      i32.const 10
+      get_local $length
+      call $power
+      set_local $divisor
+
       loop
-        get_local $n
-        get_local $divisor
-        i32.div_u
-
-        i32.eqz
-        if
-          br 1 ;; we're done
-        else
-          ;; add to length
-          get_local $length
-          i32.const 1
-          i32.add
-          set_local $length
-
-          ;; mutliply divisor
-          get_local $divisor
-          i32.const 10
-          i32.
-          set_local $divisor
-
-          ;; loop again
-          br 0
-        end
       end
 
-
+      get_local $length
+      call $storeLength
 
     end
-
-    ;; store the length
-    get_local $length
-    call $storeLength
-
-    ;; store the string
-    i32.const 20
-
-    ;; get the 1s place
-    get_local $n
-    i32.const 10
-    i32.rem_u
-
-    ;; add 48 to convert to UTF-8 for digits
-    call $digitToUtf8
-    i32.store8
-
-    ;; return the position
-    i32.const 19
   )
-)
 
-(func $storeLength (param $length i32)
-    i32.const 19
+  (func $countDigits (param $n i32) (result i32)
+    (local $length i32)
+    (local $divisor i32)
+
+    i32.const 0
+    set_local $length
+
+    i32.const 1
+    set_local $divisor
+
+    loop
+      get_local $n
+      get_local $divisor
+      i32.div_u
+
+      i32.eqz
+      if
+        br 1 ;; we're done
+      else
+        ;; add to length
+        get_local $length
+        i32.const 1
+        i32.add
+        set_local $length
+
+        ;; mutliply divisor
+        get_local $divisor
+        i32.const 10
+        i32.mul
+        set_local $divisor
+
+        ;; loop again
+        br 0
+      end
+    end
+
     get_local $length
-    i32.store8
-)
+  )
 
-(func $storeDigit (param $digit i32) (param $digitPosition i32)
+  (func $storeLength (param $length i32)
+      i32.const 19
+      get_local $length
+      i32.store8
+  )
+
+  (func $storeDigit (param $digit i32) (param $digitPosition i32)
+      get_local $digit
+      call $digitToUtf8
+
+      i32.const 20
+      get_local $digitPosition
+      i32.add
+
+      i32.store8
+  )
+
+  (func $digitToUtf8 (param $digit i32) (result i32)
     get_local $digit
-    call $digitToUtf8
-
-    i32.const 20
-    get_local $digitPosition
+    i32.const 48
     i32.add
+  )
 
-    i32.store8
+  (func $power (param $base i32) (param $exponent i32)
+    (local $counter i32)
+    (local $accum i32)
+
+    i32.const 1
+    set_local $counter
+
+    get_local $base
+    set_local $accum
+
+    loop
+
+      get_local $counter
+      get_local $exponent
+      i32.lt_u
+      if
+
+        get_local $base
+        get_local $accum
+        i32.mul
+        set_local $accum
+
+        get_local $counter
+        call $increment
+        set_local $counter
+        br 0
+
+      else
+        br 1 ;; we're done
+      end
+    end
+
+    get_local $accum
+  )
+
+  (func $increment (param $n i32) (result i32)
+    get_local $n
+    i32.const 1
+    i32.add
+  )
+
 )
-
-(func $digitToUtf8 (param $digit i32) (result i32)
-  get_local $digit
-  i32.const 48
-  i32.add
-)
-
-
