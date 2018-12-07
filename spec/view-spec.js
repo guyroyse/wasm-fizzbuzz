@@ -37,31 +37,30 @@ describe("view.wasm", function() {
   })
 
   describe("#setResult", function() {
-
     it("sets the number in the results", function() {
       subject.setResult(1)
-      let stringToDecode = mockPassiveView.setResult.calls.first().args[0]
-      expect(decodeString(memory, stringToDecode)).toBe('1')
+      expect(getStringFromCall()).toBe('1')
     })
 
     it("sets fizz as a result for -1", function() {
       subject.setResult(-1)
-      let stringToDecode = mockPassiveView.setResult.calls.first().args[0]
-      expect(decodeString(memory, stringToDecode)).toBe('fizz')
+      expect(getStringFromCall()).toBe('fizz')
     })
 
     it("sets buzz as a result for -2", function() {
       subject.setResult(-2)
-      let stringToDecode = mockPassiveView.setResult.calls.first().args[0]
-      expect(decodeString(memory, stringToDecode)).toBe('buzz')
+      expect(getStringFromCall()).toBe('buzz')
     })
 
     it("sets buzz as a result for -3", function() {
       subject.setResult(-3)
-      let stringToDecode = mockPassiveView.setResult.calls.first().args[0]
-      expect(decodeString(memory, stringToDecode)).toBe('fizzbuzz')
+      expect(getStringFromCall()).toBe('fizzbuzz')
     })
 
+    function getStringFromCall() {
+      let stringToDecode = mockPassiveView.setResult.calls.first().args[0]
+      return decodeString(memory, stringToDecode)
+    }
   })
 
 })
