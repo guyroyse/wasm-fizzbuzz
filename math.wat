@@ -27,14 +27,14 @@
     (set_local $counter (i32.const 1))
     (set_local $accum (get_local $base))
 
-    block
-      loop
+    (block
+      (loop
         (br_if 1 (i32.ge_u (get_local $counter) (get_local $exponent)))
         (set_local $accum (i32.mul (get_local $base) (get_local $accum)))
         (set_local $counter (call $increment (get_local $counter)))
         (br 0)
-      end
-    end
+      )
+    )
 
     get_local $accum
   )
