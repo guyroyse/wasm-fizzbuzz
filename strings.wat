@@ -4,12 +4,11 @@
   (import "math" "power" (func $power (param i32) (param i32) (result i32)))
   (import "math" "countDigits" (func $countDigits (param i32) (result i32)))
 
-  (memory $memory 1)
-  (export "memory" (memory $memory))
+  (import "js" "memory" (memory 1))
 
   (export "itoa" (func $itoa))
 
-  (func $itoa (param $number i32)
+  (func $itoa (param $number i32) (param $address i32)
     (local $length i32)
     (local $currentNumber i32)
     (local $currentOffset i32)
@@ -17,8 +16,8 @@
 
     (if (i32.eqz (get_local $number))
       (then
-        (call $storeLength (i32.const 1))
-        (call $storeDigit (i32.const 0) (i32.const 0))
+        (call $storeLength (i32.const 1) (get_local $address))
+        (call $storeDigit (i32.const 0) (i32.const 0) (get_local $address))
         (return)
       )
     )
@@ -41,24 +40,27 @@
           )
         )
 
-        (call $storeDigit (get_local $currentDigit) (get_local $currentOffset))
+        (call $storeDigit (get_local $currentDigit) (get_local $currentOffset) (get_local $address))
 
         (br_if 1 (i32.eqz (get_local $currentOffset)))
         (br 0)
       )
     )
 
-    (call $storeLength (get_local $length))
+    (call $storeLength (get_local $length) (get_local $address))
 
   )
 
-  (func $storeLength (param $length i32)
-    (i32.store8 (i32.const 0) (get_local $length))
+  (func $storeLength (param $length i32) (param $address i32)
+    (i32.store8 (get_local $address) (get_local $length))
   )
 
-  (func $storeDigit (param $digit i32) (param $digitPosition i32)
+  (func $storeDigit (param $digit i32) (param $digitPosition i32) (param $address i32)
     (i32.store8
-      (i32.add (i32.const 1) (get_local $digitPosition))
+      (i32.add
+        (i32.add (get_local $address) (i32.const 1))
+        (get_local $digitPosition)
+      )
       (call $digitToUtf8 (get_local $digit))
     )
   )

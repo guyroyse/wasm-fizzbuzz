@@ -1,35 +1,45 @@
 describe("strings.wasm", function() {
 
   let subject
+  let memory
 
   beforeEach(function(done) {
+    memory = new WebAssembly.Memory({ initial: 1 })
+
     loadWasm('/math.wasm')
-      .then(math => loadWasm('/strings.wasm', { math }))
+      .then(math => loadWasm('/strings.wasm', { math, js: { memory } }))
       .then(strings => subject = strings)
       .then(done)
   })
 
+  afterEach(function() {
+    console.log(new Uint8Array(memory.buffer))
+  })
+
   describe("#itoa", function() {
     it("converts 0", function() {
-      subject.itoa(0)
-      expect(decodeString(subject.memory)).toBe('0')
+      subject.itoa(0, 0)
+      expect(decodeString(memory)).toBe('0')
     })
 
     it("converts single digits", function() {
-      subject.itoa(5)
-      expect(decodeString(subject.memory)).toBe('5')
+      subject.itoa(5, 0)
+      expect(decodeString(memory)).toBe('5')
     })
 
     it("converts double digits", function() {
-      subject.itoa(42)
-      console.log(new Uint8Array(subject.memory.buffer))
-      expect(decodeString(subject.memory)).toBe('42')
+      subject.itoa(42, 0)
+      expect(decodeString(memory)).toBe('42')
     })
 
     it("converts multiple digits", function() {
-      subject.itoa(666)
-      console.log(new Uint8Array(subject.memory.buffer))
-      expect(decodeString(subject.memory)).toBe('666')
+      subject.itoa(666, 0)
+      expect(decodeString(memory)).toBe('666')
+    })
+
+    it("stores numbers add non-zero address", function() {
+      subject.itoa(666, 100)
+      expect(decodeString(memory, 100)).toBe('666')
     })
   })
 
