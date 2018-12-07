@@ -2,8 +2,8 @@
 
   (import "strings" "itoa" (func $itoa (param i32) (param i32)))
 
-  (import "html" "getInput" (func $getHtmlInput (result i32)))
-  (import "html" "setResult" (func $setHtmlResult (param i32)))
+  (import "passiveView" "getInput" (func $getHtmlInput (result i32)))
+  (import "passiveView" "setResult" (func $setHtmlResult (param i32)))
 
   (import "js" "memory" (memory 1))
 

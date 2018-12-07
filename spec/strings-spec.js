@@ -1,7 +1,6 @@
 describe("strings.wasm", function() {
 
-  let subject
-  let memory
+  let subject, memory
 
   beforeEach(function(done) {
     memory = new WebAssembly.Memory({ initial: 1 })
@@ -10,10 +9,6 @@ describe("strings.wasm", function() {
       .then(math => loadWasm('/strings.wasm', { math, js: { memory } }))
       .then(strings => subject = strings)
       .then(done)
-  })
-
-  afterEach(function() {
-    console.log(new Uint8Array(memory.buffer))
   })
 
   describe("#itoa", function() {

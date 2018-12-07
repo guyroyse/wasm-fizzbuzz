@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
       Promise.all([
         loadWasm('model.wasm'),
         loadWasm('view.wasm', {
-          html: passiveView,
+          passiveView,
           js: { memory },
           strings
         })
