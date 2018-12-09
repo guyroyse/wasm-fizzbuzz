@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resultText.value = decodeString(memory, result)
     }
 
-    return { getInput, setResult, memory }
+    return { getInput, setResult }
 
   })()
 

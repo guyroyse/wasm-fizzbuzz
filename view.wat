@@ -18,20 +18,9 @@
   (start $init)
 
   (func $init
-    ;; stores length of fizz
-    i32.const 0
-    i32.const 4
-    i32.store8
-
-    ;; stores length of buzz
-    i32.const 5
-    i32.const 4
-    i32.store8
-
-    ;; stores length of fizzbuzz
-    i32.const 10
-    i32.const 8
-    i32.store8
+    (i32.store8 (i32.const 0) (i32.const 4))
+    (i32.store8 (i32.const 5) (i32.const 4))
+    (i32.store8 (i32.const 10) (i32.const 8))
   )
 
   (func $getInput (result i32)
