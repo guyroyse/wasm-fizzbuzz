@@ -11,69 +11,46 @@
   (export "setResult" (func $setResult))
 
   ;; these are to be prefixed with the length of the string
-  (data (i32.const 1) "fizz")
-  (data (i32.const 6) "buzz")
-  (data (i32.const 11) "fizzbuzz")
-
-  (start $init)
-
-  (func $init
-    (i32.store8 (i32.const 0) (i32.const 4))
-    (i32.store8 (i32.const 5) (i32.const 4))
-    (i32.store8 (i32.const 10) (i32.const 8))
-  )
+  (data (i32.const 0) "\04fizz")
+  (data (i32.const 5) "\04buzz")
+  (data (i32.const 10) "\08fizzbuzz")
 
   (func $getInput (result i32)
     call $getHtmlInput
   )
 
   (func $setResult (param $result i32)
-    get_local $result
-    i32.const -1
-    i32.eq
-    if
-      call $setToFizz
-    else
-      get_local $result
-      i32.const -2
-      i32.eq
-      if
-        call $setToBuzz
-      else
-        get_local $result
-        i32.const -3
-        i32.eq
-        if
-          call $setToFizzBuzz
-        else
-          get_local $result
-          call $setToNumber
-        end
-      end
-    end
+    (if (i32.eq (get_local $result) (i32.const -1))
+      (then (call $setToFizz))
+      (else
+        (if (i32.eq (get_local $result) (i32.const -2))
+          (then (call $setToBuzz))
+          (else
+            (if (i32.eq (get_local $result) (i32.const -3))
+              (then (call $setToFizzBuzz))
+              (else (call $setToNumber (get_local $result))
+              )
+            )
+          )
+        )
+      )
+    )
   )
 
   (func $setToFizz
-    i32.const 0
-    call $setHtmlResult
+    (call $setHtmlResult (i32.const 0))
   )
 
   (func $setToBuzz
-    i32.const 5
-    call $setHtmlResult
+    (call $setHtmlResult (i32.const 5))
   )
 
   (func $setToFizzBuzz
-    i32.const 10
-    call $setHtmlResult
+    (call $setHtmlResult (i32.const 10))
   )
 
   (func $setToNumber (param $n i32)
-    get_local $n
-    i32.const 19
-    call $itoa
-
-    i32.const 19
-    call $setHtmlResult
+    (call $itoa (get_local $n) (i32.const 19))
+    (call $setHtmlResult (i32.const 19))
   )
 )
