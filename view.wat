@@ -10,7 +10,6 @@
   (export "getInput" (func $getInput))
   (export "setResult" (func $setResult))
 
-  ;; these are to be prefixed with the length of the string
   (data (i32.const 0) "\04fizz")
   (data (i32.const 5) "\04buzz")
   (data (i32.const 10) "\08fizzbuzz")
