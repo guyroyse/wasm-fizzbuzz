@@ -20,21 +20,20 @@
   )
 
   (func $setResult (param $result i32)
-    (if (i32.eq (get_local $result) (i32.const -1))
-      (then (call $setToFizz))
-      (else
-        (if (i32.eq (get_local $result) (i32.const -2))
-          (then (call $setToBuzz))
-          (else
-            (if (i32.eq (get_local $result) (i32.const -3))
-              (then (call $setToFizzBuzz))
-              (else (call $setToNumber (get_local $result))
-              )
-            )
-          )
-        )
-      )
+    (if (i32.eq (get_local $result) (i32.const -1)) (then
+      (call $setToFizz)
     )
+    (else
+      (if (i32.eq (get_local $result) (i32.const -2)) (then
+        (call $setToBuzz))
+      (else
+        (if (i32.eq (get_local $result) (i32.const -3)) (then
+          (call $setToFizzBuzz))
+        (else
+          (call $setToNumber (get_local $result))
+        ))
+      ))
+    ))
   )
 
   (func $setToFizz
