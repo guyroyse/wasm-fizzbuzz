@@ -16,8 +16,8 @@
 
     (if (i32.eqz (get_local $number))
       (then
-        (call $storeLength (i32.const 1) (get_local $address))
         (call $storeDigit (i32.const 0) (i32.const 0) (get_local $address))
+        (call $storeNull (i32.const 1) (get_local $address))
         (return)
       )
     )
@@ -47,21 +47,30 @@
       )
     )
 
-    (call $storeLength (get_local $length) (get_local $address))
+    (call $storeNull (get_local $length) (get_local $address))
 
   )
 
-  (func $storeLength (param $length i32) (param $address i32)
-    (i32.store8 (get_local $address) (get_local $length))
-  )
-
-  (func $storeDigit (param $digit i32) (param $digitPosition i32) (param $address i32)
-    (i32.store8
-      (i32.add
-        (i32.add (get_local $address) (i32.const 1))
-        (get_local $digitPosition)
-      )
+  (func $storeDigit (param $digit i32) (param $position i32) (param $address i32)
+    (call $storeValue 
       (call $digitToUtf8 (get_local $digit))
+      (get_local $position)
+      (get_local $address)
+    )
+  )
+
+  (func $storeNull (param $position i32) (param $address i32)
+    (call $storeValue 
+      (i32.const 0)
+      (get_local $position)
+      (get_local $address)
+    )
+  )
+
+  (func $storeValue (param $value i32) (param $position i32) (param $address i32)
+    (i32.store8
+      (i32.add (get_local $address) (get_local $position))
+      (get_local $value)
     )
   )
 

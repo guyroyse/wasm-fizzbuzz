@@ -10,9 +10,9 @@
   (export "getInput" (func $getInput))
   (export "setResult" (func $setResult))
 
-  (data (i32.const 0) "\04fizz")
-  (data (i32.const 5) "\04buzz")
-  (data (i32.const 10) "\08fizzbuzz")
+  (data (i32.const 0) "fizz\00")
+  (data (i32.const 5) "buzz\00")
+  (data (i32.const 10) "fizzbuzz\00")
 
   (func $getInput (result i32)
     call $getHtmlInput
