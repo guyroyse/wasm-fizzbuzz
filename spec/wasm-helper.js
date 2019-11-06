@@ -1,14 +1,17 @@
-function loadWasm(path, imports) {
-  return fetch(path)
-    .then(response => response.arrayBuffer())
-    .then(bytes => WebAssembly.instantiate(bytes, imports))
-    .then(results => results.instance.exports)
+async function loadWasm(path, imports) {
+  let response = await fetch(path)
+  let bytes = await response.arrayBuffer()
+  let module = await WebAssembly.instantiate(bytes, imports)
+  return module.instance.exports
 }
 
-function decodeString(memory, offset = 0) {
-  let startingBytes = new Uint8Array(memory.buffer, offset)
-  let length = startingBytes[0]
-  let bytes = startingBytes.slice(1, length + 1)
-  var string = new TextDecoder('utf8').decode(bytes);
-  return string
+function decodeString(memory, psz) {
+  let decoder = new TextDecoder('utf8')
+  let shared = new Uint8Array(memory.buffer, psz)
+  let index = shared.indexOf(0)
+
+  let bytes = shared
+  if(index !== -1) bytes = shared.slice(0, index)
+  
+  return decoder.decode(bytes)
 }
